@@ -135,11 +135,23 @@ private struct Driver(Policy) {
 
                 mysql = check("mysql_init", mysql_init(null));
 
-                check("mysql_real_connect", mysql_real_connect(mysql,
-                    cast(cstring) toStringz(source.server),
-                    cast(cstring) toStringz(source.username),
-                    cast(cstring) toStringz(source.password),
-                    cast(cstring) toStringz(source.database), 0, null, 0));
+                if(source.host.length > 0)
+                {
+                    trace("host is : ", source.host, "  port= ",source.port);
+                    check("mysql_real_connect", mysql_real_connect(mysql,
+                        cast(cstring) toStringz(source.host),
+                        cast(cstring) toStringz(source.username),
+                        cast(cstring) toStringz(source.password),
+                        cast(cstring) toStringz(source.database), source.port, null, 0));
+                }
+                else
+                {
+                    check("mysql_real_connect", mysql_real_connect(mysql,
+                        cast(cstring) toStringz(source.server),
+                        cast(cstring) toStringz(source.username),
+                        cast(cstring) toStringz(source.password),
+                        cast(cstring) toStringz(source.database), 0, null, 0));
+                }
             }
 
             ~this() {
@@ -604,14 +616,24 @@ private struct Driver(Policy) {
 
             this(Database* db_, Source source) {
                 db = db_;
-
                 mysql = check("mysql_init", mysql_init(null));
-
-                check("mysql_real_connect", mysql_real_connect(mysql,
-                    cast(cstring) toStringz(source.server),
-                    cast(cstring) toStringz(source.username),
-                    cast(cstring) toStringz(source.password),
-                    cast(cstring) toStringz(source.database), 0, null, 0));
+                if(source.host.length > 0)
+                {
+                    trace("host is : ", source.host, "  port= ",source.port);
+                    check("mysql_real_connect", mysql_real_connect(mysql,
+                        cast(cstring) toStringz(source.host),
+                        cast(cstring) toStringz(source.username),
+                        cast(cstring) toStringz(source.password),
+                        cast(cstring) toStringz(source.database), source.port, null, 0));
+                }
+                else
+                {
+                    check("mysql_real_connect", mysql_real_connect(mysql,
+                        cast(cstring) toStringz(source.server),
+                        cast(cstring) toStringz(source.username),
+                        cast(cstring) toStringz(source.password),
+                        cast(cstring) toStringz(source.database), 0, null, 0));
+                }
             }
 
             ~this() {
