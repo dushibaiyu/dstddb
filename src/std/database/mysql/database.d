@@ -49,36 +49,36 @@ private static bool isError()(int ret) {
     return !(ret == 0 || ret == MYSQL_NO_DATA || ret == MYSQL_DATA_TRUNCATED);
 }
 
-private static T* check(T)(string msg, T* ptr) {
+private static T* check(T,string file = __FILE__, size_t line = __LINE__)(string msg, T* ptr) {
     info(msg, ":", ptr);
     if (!ptr)
-        raiseError(msg);
+        raiseError!(file,line)(msg);
     return ptr;
 }
 
-private static int check()(string msg, MYSQL_STMT* stmt, int ret) {
+private static int check(string file = __FILE__, size_t line = __LINE__)(string msg, MYSQL_STMT* stmt, int ret) {
     info(msg, ":", ret);
     if (isError(ret))
-        raiseError(msg, stmt, ret);
+		raiseError!(file,line)(msg, stmt, ret);
     return ret;
 }
 
-private static void raiseError()(string msg) {
-    throw new DatabaseException("mysql error: " ~ msg);
+private static void raiseError(string file = __FILE__, size_t line = __LINE__)(string msg) {
+	throw new DatabaseException("mysql error: " ~ msg,file,line);
 }
 
-private static void raiseError()(string msg, int ret) {
-    throw new DatabaseException("mysql error: status: " ~ to!string(ret) ~ ":" ~ msg);
+private static void raiseError(string file = __FILE__, size_t line = __LINE__)(string msg, int ret) {
+	throw new DatabaseException("mysql error: status: " ~ to!string(ret) ~ ":" ~ msg,file,line);
 }
 
-private static void raiseError()(string msg, MYSQL_STMT* stmt, int ret) {
+private static void raiseError(string file = __FILE__, size_t line = __LINE__)(string msg, MYSQL_STMT* stmt, int ret) {
     import core.stdc.string : strlen;
     import std.string;
     
     const(char*) err = mysql_stmt_error(stmt);
     msg ~= "  erro: ";
     msg ~= fromStringz(err);
-    throw new DatabaseException("mysql error: " ~ msg);
+    throw new DatabaseException("mysql error: " ~ msg,file,line);
 }
 
 private struct Driver(Policy) {

@@ -40,31 +40,31 @@ auto createDatabase(T)(string defaultURI = "") {
    }
  */
 
-void error()(PGconn* con, string msg) {
+void error(string file = __FILE__, size_t line = __LINE__)(PGconn* con, string msg) {
     import std.conv;
 
     auto s = msg ~ to!string(PQerrorMessage(con));
-    throw new DatabaseException(s);
+    throw new DatabaseException(s,file,line);
 }
 
-void error()(PGconn* con, string msg, int result) {
+void error(string file = __FILE__, size_t line = __LINE__)(PGconn* con, string msg, int result) {
     import std.conv;
 
     auto s = "error:" ~ msg ~ ": " ~ to!string(result) ~ ": " ~ to!string(PQerrorMessage(con));
-    throw new DatabaseException(s);
+	throw new DatabaseException(s,file,line);
 }
 
-int check()(PGconn* con, string msg, int result) {
+int check(string file = __FILE__, size_t line = __LINE__)(PGconn* con, string msg, int result) {
     info(msg, ": ", result);
     if (result != 1)
-        error(con, msg, result);
+        error!(file,line)(con, msg, result);
     return result;
 }
 
-int checkForZero()(PGconn* con, string msg, int result) {
+int checkForZero(string file = __FILE__, size_t line = __LINE__)(PGconn* con, string msg, int result) {
     info(msg, ": ", result);
     if (result != 0)
-        error(con, msg, result);
+		error!(file,line)(con, msg, result);
     return result;
 }
 
@@ -510,23 +510,23 @@ struct Driver(Policy) {
             res = null;
         }
 
-        auto error(string msg) {
-            return new DatabaseException(msg);
+		auto error(string file = __FILE__, size_t line = __LINE__)(string msg) {
+            return new DatabaseException(msg,file,line);
         }
 
-        auto error(ExecStatusType status) {
+		auto error(string file = __FILE__, size_t line = __LINE__)(ExecStatusType status) {
             import std.conv;
 
             string s = "result error: " ~ to!string(PQresStatus(status));
-            return new DatabaseException(s);
+			return new DatabaseException(s,file,line);
         }
 
-        auto error(PGresult* res, ExecStatusType status) {
+		auto error(string file = __FILE__, size_t line = __LINE__)(PGresult* res, ExecStatusType status) {
             import std.conv;
 
             const char* msg = PQresultErrorMessage(res);
             string s = "error: " ~ to!string(PQresStatus(status)) ~ ", message:" ~ to!string(msg);
-            return new DatabaseException(s);
+			return new DatabaseException(s,file,line);
         }
 
         /*
