@@ -913,7 +913,7 @@ struct Converter(D,P) {
 		{from: ValueType.Char, 		to: ValueType.String, &generate!(char,string).convert},
 		{from: ValueType.Short, 	to: ValueType.String, &generate!(short,string).convert},
 		{from: ValueType.Int, 		to: ValueType.String, &generate!(int,string).convert},
-		{from: ValueType.Long, 		to: ValueType.String, &generate!(int,string).convert},
+		{from: ValueType.Long, 		to: ValueType.String, &generate!(long,string).convert},
 		{from: ValueType.Float, 	to: ValueType.String, &generate!(float,string).convert},
 		{from: ValueType.Double, 	to: ValueType.String, &generate!(double,string).convert},
 		{from: ValueType.Raw, 		to: ValueType.String, &generate!(ubyte[],string).convert},
