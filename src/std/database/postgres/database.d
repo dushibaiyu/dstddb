@@ -334,7 +334,7 @@ struct Driver(Policy) {
         string name;
     }
 	// use std.database.front.ValueType not std.traits.ValueType
-	alias ValueType = std.database.front.ValueType;
+    alias ValueType = std.database.front.ValueType;
     struct Bind {
         ValueType type;
         int idx;
@@ -362,7 +362,7 @@ struct Driver(Policy) {
             stmt = stmt_;
             con = stmt.con;
             res = stmt.res;
-
+            //trace("build a rulest!");
             setup();
 
             build_describe();
@@ -375,13 +375,13 @@ struct Driver(Policy) {
         }
 
         bool setup() {
+           // trace("setup");
             if (!res) {
-                info("no result");
-                return false;
+                throw error("no result: result is null");
             }
             status = PQresultStatus(res);
             rows = PQntuples(res);
-
+           // trace("status is ", status);
             // not handling PGRESS_SINGLE_TUPLE yet
             if (status == PGRES_COMMAND_OK) {
                 close();

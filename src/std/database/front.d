@@ -467,8 +467,8 @@ struct BasicStatement(D, P) {
     // returns range for one or more things returned by a query
     auto results() {
         if (state != State.Executed)
-            throw new DatabaseException("not executed");
-        return 0; // fill in
+            query();
+        return Result(this, rowArraySize_); // fill in
     }
 
 private:
@@ -508,6 +508,18 @@ struct BasicResult(D, P) {
         rowsFetched_ = data_.fetch();
     }
 
+    bool hasRows() {
+        return stmt_.hasRows;
+    }
+    
+    auto rows() {
+        return stmt_.rows;
+    }
+
+    auto columns() {
+        return stmt_.columns;
+    }
+    
     // disallow slicing to avoid confusion: must use rows/results
     //auto opSlice() {return ResultRange(this);}
 
