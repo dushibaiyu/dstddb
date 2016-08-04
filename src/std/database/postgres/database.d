@@ -169,7 +169,7 @@ struct Driver(Policy) {
         void query() {
             import std.conv;
 
-            info("query sql: ", sql);
+            trace("query sql: ", sql);
 
             static if (Policy.nonblocking) {
 
@@ -362,14 +362,16 @@ struct Driver(Policy) {
             stmt = stmt_;
             con = stmt.con;
             res = stmt.res;
-            //trace("build a rulest!");
+            trace("build a rulest!");
             setup();
 
             build_describe();
             build_bind();
+            trace("end a rulest!");
         }
 
         ~this() {
+            trace("~this() { rulest!");
             if (res)
                 close();
         }
@@ -394,13 +396,13 @@ struct Driver(Policy) {
             else if (status == PGRES_TUPLES_OK) {
                 return true;
             }
-            else
+            else 
                 throw error(res, status);
         }
 
         void build_describe() {
             import std.conv;
-
+            trace("build_describe!");
             // called after next()
             columns = PQnfields(res);
             for (int col = 0; col != columns; col++) {
@@ -413,6 +415,7 @@ struct Driver(Policy) {
         }
 
         void build_bind() {
+            trace("build_bind!");
             // artificial bind setup
             bind.reserve(columns);
             for (int i = 0; i < columns; ++i) {
@@ -459,8 +462,8 @@ struct Driver(Policy) {
                     b.type = ValueType.Raw;
                     break;
                 default:
-					b.type = ValueType.UNKnown;
-					break;
+                    b.type = ValueType.UNKnown;
+                    break;
                    // throw new DatabaseException("unsupported type");
                 }
             }

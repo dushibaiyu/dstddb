@@ -503,8 +503,6 @@ struct BasicResult(D, P) {
         stmt_ = stmt;
         rowArraySize_ = rowArraySize;
         data_ = Data(&stmt.data_.refCountedPayload(), rowArraySize_);
-        if (!stmt_.hasRows)
-            throw new DatabaseException("not a result query");
         rowsFetched_ = data_.fetch();
     }
 
