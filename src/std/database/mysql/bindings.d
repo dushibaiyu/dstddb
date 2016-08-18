@@ -147,7 +147,7 @@ extern(System) {
     struct MYSQL_STMT;
     MYSQL_STMT* mysql_stmt_init(MYSQL *);
     my_bool mysql_stmt_close(MYSQL_STMT *);
-    int mysql_stmt_prepare(MYSQL_STMT *, const char *, ulong);
+    int mysql_stmt_prepare(MYSQL_STMT *, const char *, size_t);
     const(char *) mysql_stmt_error(MYSQL_STMT *);
     int mysql_stmt_execute(MYSQL_STMT *);
 
